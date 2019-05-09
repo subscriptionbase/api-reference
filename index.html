@@ -1134,16 +1134,16 @@ $paymentMethod-&gt;delete();
   -H Authorization: Bearer &lt;アクセストークン&gt;<span class="se">\</span>
   -d <span class="nv">customer</span><span class="o">=</span>&lt;顧客ID&gt;<span class="se">\</span>
   -d <span class="nv">plan</span><span class="o">=</span>&lt;プランID&gt;<span class="se">\</span>
-  -d <span class="nv">start_at</span><span class="o">=</span>2019-06-01T00:00:00+0900
+  -d <span class="nv">trial_end_at</span><span class="o">=</span>2019-06-01T00:00:00+0900
 </code></pre><pre class="highlight php tab-php"><code>use SubscriptionBase\SubscriptionBase;
 use SubscriptionBase\Subscription;
 
 SubscriptionBase::setApiKeys(<span class="err">&lt;</span>クライアントID&gt;, <span class="err">&lt;</span>シークレットキー&gt;);
 
 Subscription::create(array(
-    'customer'  =&gt; <span class="err">&lt;</span>顧客ID&gt;,
-    'plan'      =&gt; <span class="err">&lt;</span>プランID&gt;,
-    'start_at'  =&gt; '2019-06-01T00:00:00+0900',
+    'customer'     =&gt; <span class="err">&lt;</span>顧客ID&gt;,
+    'plan'         =&gt; <span class="err">&lt;</span>プランID&gt;,
+    'trial_end_at' =&gt; '2019-06-01T00:00:00+0900',
 ));
 </code></pre>
 <blockquote>
@@ -1157,7 +1157,7 @@ Subscription::create(array(
   </span><span class="s2">"contract_end_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"last_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
   </span><span class="s2">"next_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"state"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"status"</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"churn_at"</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
   </span><span class="s2">"update_at"</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:30+0900"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"create_at"</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:30+0900"</span><span class="p">,</span><span class="w">
@@ -1240,12 +1240,16 @@ Subscription::create(array(
 <td>プランID</td>
 </tr>
 <tr>
-<td>start_at</td>
+<td>trial_end_at</td>
 <td>String</td>
 <td>-</td>
-<td>契約（課金）開始時刻をUTCで指定。デフォルトは現在時刻。</td>
+<td>契約開始時刻をUTC時刻、もしくは、&quot;now&quot;（=現在時刻）で指定。</td>
 </tr>
 </tbody></table>
+
+<ul>
+<li>「trial_end_at」... この項目を設定すると、プランのトライアル設定を無視して、指定した日時にトライアル期間を終了して契約期間を開始します。過去時刻の指定はできません。</li>
+</ul>
 <h2 id='bb87e346ee'>購読契約を取得する</h2>
 <p>購読IDから契約情報を取得します。</p>
 
@@ -1272,7 +1276,7 @@ Subscription::retrieve(<span class="nt">&lt;ID&gt;</span>);
   </span><span class="s2">"contract_end_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"last_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
   </span><span class="s2">"next_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"state"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"status"</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"churn_at"</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
   </span><span class="s2">"customer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="s2">"id"</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="s2">"cus_01daaym803gvhdycjcky0hmx6t"</span><span class="p">,</span><span class="w">
@@ -1375,7 +1379,7 @@ Subscription::retrieve(<span class="nt">&lt;ID&gt;</span>);
 <td>次回清算日時</td>
 </tr>
 <tr>
-<td>state</td>
+<td>status</td>
 <td>String(255)</td>
 <td>契約の状態値</td>
 </tr>
@@ -1429,7 +1433,7 @@ Subscription::all(array(
       </span><span class="s2">"contract_end_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
       </span><span class="s2">"last_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
       </span><span class="s2">"next_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
-      </span><span class="s2">"state"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"status"</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
       </span><span class="s2">"churn_at"</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
       </span><span class="s2">"customer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="s2">"id"</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="s2">"cus_01daaym803gvhdycjcky0hmx6t"</span><span class="p">,</span><span class="w">
@@ -1518,7 +1522,7 @@ $subscription-&gt;cancel();
   </span><span class="s2">"contract_end_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"last_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
   </span><span class="s2">"next_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"state"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"cancel_reserved"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"status"</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s2">"cancel_reserved"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"churn_at"</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
   </span><span class="s2">"customer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="s2">"id"</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="s2">"cus_01daaym803gvhdycjcky0hmx6t"</span><span class="p">,</span><span class="w">
