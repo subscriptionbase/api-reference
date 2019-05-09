@@ -13,7 +13,7 @@ curl -X POST https://api.subscriptionbase.io/v1/subscriptions/\
   -H Authorization: Bearer <アクセストークン>\
   -d customer=<顧客ID>\
   -d plan=<プランID>\
-  -d start_at=2019-06-01T00:00:00+0900
+  -d trial_end_at=2019-06-01T00:00:00+0900
 ```
 
 ```php
@@ -23,9 +23,9 @@ use SubscriptionBase\Subscription;
 SubscriptionBase::setApiKeys(<クライアントID>, <シークレットキー>);
 
 Subscription::create(array(
-    'customer'  => <顧客ID>,
-    'plan'      => <プランID>,
-    'start_at'  => '2019-06-01T00:00:00+0900',
+    'customer'     => <顧客ID>,
+    'plan'         => <プランID>,
+    'trial_end_at' => '2019-06-01T00:00:00+0900',
 ));
 ```
 
@@ -40,7 +40,7 @@ Subscription::create(array(
   "contract_end_at"   : "2019-07-08T00:00:00+0900",
   "last_payment_at"   : null,
   "next_payment_at"   : "2019-07-08T00:00:00+0900",
-  "state"             : "active",
+  "status"            : "active",
   "churn_at"          : null,
   "update_at"         : "2019-05-08T14:28:30+0900",
   "create_at"         : "2019-05-08T14:28:30+0900",
@@ -110,8 +110,9 @@ Subscription::create(array(
 ---- | ---- | -- | -----------
 customer | String（30） | ◯ | 顧客ID
 plan | String(30) | ◯ | プランID
-start_at | String | - | 契約（課金）開始時刻をUTCで指定。デフォルトは現在時刻。
+trial_end_at | String | - | 契約開始時刻をUTC時刻、もしくは、"now"（=現在時刻）で指定。
 
+* 「trial_end_at」... この項目を設定すると、プランのトライアル設定を無視して、指定した日時にトライアル期間を終了して契約期間を開始します。過去時刻の指定はできません。
 
 ## 購読契約を取得する
 
@@ -144,7 +145,7 @@ Subscription::retrieve(<ID>);
   "contract_end_at"   : "2019-07-08T00:00:00+0900",
   "last_payment_at"   : null,
   "next_payment_at"   : "2019-07-08T00:00:00+0900",
-  "state"             : "active",
+  "status"            : "active",
   "churn_at"          : null,
   "customer": {
     "id"               : "cus_01daaym803gvhdycjcky0hmx6t",
@@ -217,7 +218,7 @@ contract_begin_at | Datetime | 契約開始日時
 contract_end_at | Datetime | 契約終了日時
 last_payment_at | Datetime | 前回清算日時
 next_payment_at | Datetime | 次回清算日時
-state | String(255) | 契約の状態値
+status | String(255) | 契約の状態値
 churn_at | Datetime | 解約日時
 customer | Object | 顧客情報のオブジェクト
 plan | Object | プラン情報のオブジェクト
@@ -262,7 +263,7 @@ Subscription::all(array(
       "contract_end_at"   : "2019-07-08T00:00:00+0900",
       "last_payment_at"   : null,
       "next_payment_at"   : "2019-07-08T00:00:00+0900",
-      "state"             : "active",
+      "status"            : "active",
       "churn_at"          : null,
       "customer": {
         "id"               : "cus_01daaym803gvhdycjcky0hmx6t",
@@ -361,7 +362,7 @@ $subscription->cancel();
   "contract_end_at"   : "2019-07-08T00:00:00+0900",
   "last_payment_at"   : null,
   "next_payment_at"   : "2019-07-08T00:00:00+0900",
-  "state"             : "cancel_reserved",
+  "status"            : "cancel_reserved",
   "churn_at"          : null,
   "customer": {
     "id"               : "cus_01daaym803gvhdycjcky0hmx6t",
