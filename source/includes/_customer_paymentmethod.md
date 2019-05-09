@@ -214,6 +214,58 @@ $customer->payment_methods->all();
 `GET https://api.subscriptionbase.io/v1/customers/<顧客ID>/payment-methods/`
 
 
+## 支払い方法を選択する
+
+顧客が料金精算に使用する支払い方法を選択します。<br>
+支払いIDを指定してこの操作を実行すると、is_primary=trueが設定され、その他の支払い方法はis_primary=falseに変更されます。
+
+> リクエスト
+
+```shell
+curl -X GET https://api.subscriptionbase.io/v1/customers/<顧客ID>/payment-methods/<支払い方法ID>/primary/\
+  -H Authorization: Bearer <アクセストークン>
+```
+
+```php
+use SubscriptionBase\SubscriptionBase;
+use SubscriptionBase\Customer;
+
+SubscriptionBase::setApiKeys(<クライアントID>, <シークレットキー>);
+
+$customer = Customer::retrieve(<顧客ID>);
+$paymentMethod = $customer->payment_methods->retrieve(<支払い方法ID>);
+$paymentMethod->primary();
+```
+
+> レスポンス
+
+```json
+{
+  "id"             : "pym_01daaj6g6kbbtd29g38wqyt4k6",
+  "object_name"    : "paymentmethod",
+  "customer"       : "cus_01daaj6g58fe7755ytqzetfd4g",
+  "billing_method" : "blm_01daaj6g46zzfr9c56hfbgj73e",
+  "is_primary"     : true,
+  "email_address": {
+    "mail_to"    : "mailto@example.com",
+    "mail_cc"    : null,
+    "mail_bcc"   : null,
+    "company"    : null,
+    "department" : null,
+    "position"   : null,
+    "name"       : "customer_name"
+  },
+  "archive_at" : null,
+  "update_at" : "2019-05-08T10:51:16+0900",
+  "create_at" : "2019-05-08T10:51:16+0900"
+}
+```
+
+### HTTP Request
+
+`POST https://api.subscriptionbase.io/v1/customers/<顧客ID>/payment-methods/<支払い方法>/primary/`
+
+
 ## 支払い方法を削除する
 
 顧客が保有する支払い方法を削除します。<br>

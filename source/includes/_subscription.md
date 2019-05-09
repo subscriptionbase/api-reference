@@ -328,11 +328,109 @@ Subscription::all(array(
 `GET https://api.subscriptionbase.io/v1/subscriptions/`
 
 
+## 購読契約をキャンセルする
+
+購読契約のキャンセルは、契約の更新停止を示します。<br>
+この操作を行うと、残存する契約期間の満了後、解約状態へ移行します。
+
+> リクエスト
+
+```shell
+curl -X POST https://api.subscriptionbase.io/v1/subscriptions/<ID>/cancel/\
+  -H Authorization: Bearer <アクセストークン>
+```
+
+```php
+use SubscriptionBase\SubscriptionBase;
+use SubscriptionBase\Subscription;
+
+SubscriptionBase::setApiKeys(<クライアントID>, <シークレットキー>);
+
+$subscription = Subscription::retrieve(<ID>);
+$subscription->cancel();
+```
+
+> レスポンス
+
+```json
+{
+  "id"                : "sub_01daaym81nk191jk81rcra91hq",
+  "object_name"       : "subscription",
+  "trial_begin_at"    : "2019-06-01T00:00:00+0900",
+  "contract_begin_at" : "2019-06-08T00:00:00+0900",
+  "contract_end_at"   : "2019-07-08T00:00:00+0900",
+  "last_payment_at"   : null,
+  "next_payment_at"   : "2019-07-08T00:00:00+0900",
+  "state"             : "cancel_reserved",
+  "churn_at"          : null,
+  "customer": {
+    "id"               : "cus_01daaym803gvhdycjcky0hmx6t",
+    "object_name"      : "customer",
+    "udid"             : "90e342e0-bc4d-48cb-baf4-f93e139f4858",
+    "email"            : "claytonsanders@banks.com",
+    "company"          : null,
+    "department"       : null,
+    "position"         : null,
+    "name"             : null,
+    "postal_code3"     : null,
+    "postal_code4"     : null,
+    "prefecture"       : null,
+    "address_city"     : null,
+    "address_town"     : null,
+    "address_number"   : null,
+    "address_building" : null,
+    "archive_at"       : null,
+    "update_at"        : "2019-05-08T14:28:29+0900",
+    "create_at"        : "2019-05-08T14:28:29+0900"
+  },
+  "plan": {
+    "id"              : "pln_01daaym808vm16e5eyar0pezdg",
+    "object_name"     : "plan",
+    "product"         : "prd_01daaym8051ej4z6rd54jckgtp",
+    "name"            : "\u30d7\u30e9\u30f3\u540d",
+    "public_name"     : "\u30d7\u30e9\u30f3\u516c\u958b\u540d",
+    "contract_period" : "m1",
+    "update_method"   : "repeat",
+    "payment_term"    : "m1",
+    "start_method"    : "trial",
+    "trial_days"      : 7,
+    "charge": {
+      "charge_type" : "volume",
+      "meter": {
+        "id"               : "mtr_01daaym806bak37h7xrjmrrrqb",
+        "object_name"      : "meter",
+        "name"             : "meter name",
+        "public_name"      : "",
+        "is_active"        : false,
+        "last_counting_at" : "2019-05-08T14:28:29+0900",
+        "update_at"        : "2019-05-08T14:28:29+0900",
+        "create_at"        : "2019-05-08T14:28:29+0900"
+      },
+      "volume": {
+        "unit"   : 1,
+        "amount" : 10
+      }
+    },
+    "archive_at" : null,
+    "update_at"  : "2019-05-08T14:28:29+0900",
+    "create_at" : "2019-05-08T14:28:29+0900"
+  },
+  "update_at" : "2019-05-08T14:28:30+0900",
+  "create_at" : "2019-05-08T14:28:30+0900"
+}
+```
+
+### HTTP Request
+
+`POST https://api.subscriptionbase.io/v1/subscriptions/<ID>/cancel/`
+
+
+
 ## 購読契約を削除する
 
 購読契約の削除は、即時解約を示します。<br>
 <aside class="warning">
-この操作を行うと、該当の購読契約は契約期間の残存を無視して即座に解約済み状態となり、料金清算も行われません。
+この操作を行うと、該当の購読契約は契約期間の残存や利用状況を無視して即座に解約済み状態となり、料金清算も行われません。
 </aside>
 
 > リクエスト
