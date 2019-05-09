@@ -223,6 +223,9 @@
             <a href="#978b6f4c71" class="toc-h1 toc-link" data-title="イントロダクション">イントロダクション</a>
               <ul class="toc-list-h2">
                   <li>
+                    <a href="#api" class="toc-h2 toc-link" data-title="APIキーの準備">APIキーの準備</a>
+                  </li>
+                  <li>
                     <a href="#sdk" class="toc-h2 toc-link" data-title="SDK">SDK</a>
                   </li>
                   <li>
@@ -271,6 +274,9 @@
                     <a href="#eb13f48092" class="toc-h2 toc-link" data-title="支払い方法リストを取得する">支払い方法リストを取得する</a>
                   </li>
                   <li>
+                    <a href="#31f03181f7" class="toc-h2 toc-link" data-title="支払い方法を選択する">支払い方法を選択する</a>
+                  </li>
+                  <li>
                     <a href="#dd7bde03ff" class="toc-h2 toc-link" data-title="支払い方法を削除する">支払い方法を削除する</a>
                   </li>
               </ul>
@@ -288,6 +294,9 @@
                     <a href="#9a4c76cdc8" class="toc-h2 toc-link" data-title="購読契約リストを取得する">購読契約リストを取得する</a>
                   </li>
                   <li>
+                    <a href="#79a753aa3f" class="toc-h2 toc-link" data-title="購読契約をキャンセルする">購読契約をキャンセルする</a>
+                  </li>
+                  <li>
                     <a href="#73631a4436" class="toc-h2 toc-link" data-title="購読契約を削除する">購読契約を削除する</a>
                   </li>
               </ul>
@@ -298,15 +307,18 @@
       <div class="dark-box"></div>
       <div class="content">
         <h1 id='978b6f4c71'>イントロダクション</h1>
-<p>サブスクリプションベースのAPIドキュメントです。</p>
-
+<p>サブスクリプションベースのAPIリファレンスです。</p>
+<h2 id='api'>APIキーの準備</h2>
 <p>APIを利用するには、最初に<a href="http://app.subscriptionbase.io/setting/oauth2/">コンソール画面</a>からクライアントIDとシークレットキーの発行が必要です。</p>
 
 <aside class="notice">
-<strong>クライアントIDとシークレットキーは秘密情報として取り扱いください。</strong><br><br>
-クライアントIDとシークレットキーを利用すると顧客情報の取得が可能になりますので、外部に漏洩すると情報流出につながる可能性があります。<br>
-また、git等のバージョン管理ツールの管理下にも含めないようご注意ください。
+<strong>クライアントIDとシークレットキーは秘密情報としてお取り扱いください。</strong>
 </aside>
+
+<ul>
+<li>APIキーを利用すると顧客情報の取得が可能になりますので、外部に漏洩すると情報漏洩につながる可能性があります。</li>
+<li>git等のバージョン管理ツールの管理下にも含めないようご注意ください。</li>
+</ul>
 <h2 id='sdk'>SDK</h2>
 <p>各言語に対応したSDKを提供しています。<br>
 本ページのソースコード例は、各言語のSDKを利用した記述になっています。<br>
@@ -385,8 +397,9 @@ SDKを利用している場合には、自動的にヘッダーが付与され�
 
 <p><code>Authorization: Bearer &lt;AccessToken&gt;</code></p>
 <h1 id='customer'>顧客（Customer）</h1>
-<p>「顧客(Customer)」は、貴社サービスを購読する契約者を示します。<br>
-顧客モデルに保存した契約者情報は、請求書や利用明細書を発行する際などに請求宛先として利用します。</p>
+<p>「顧客(Customer)」は、貴社サービスを購読する契約者を示します。<br></p>
+
+<p>顧客モデルの契約者情報は、請求書や利用明細書を発行する際などに請求宛先として記載されます。</p>
 <h2 id='8cfc8890b7'>顧客を作成する</h2>
 <blockquote>
 <p>リクエスト</p>
@@ -429,7 +442,7 @@ Customer::create(array(
   </span><span class="s2">"create_at"</span><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-06T16:59:35+0900"</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>udid（ユーザー定義ID）または、メールアドレスを指定すると、該当項目で顧客の検索が可能になります。</p>
+<p>udid（ユーザー定義ID）または、メールアドレスを指定すると、該当項目で検索が可能になります。</p>
 <h3 id='http-request'>HTTP Request</h3>
 <p><code>POST https://api.subscriptionbase.io/v1/customers/</code></p>
 <h3 id='d22de6f4a5'>リクエストデータ</h3>
@@ -1041,6 +1054,48 @@ $customer-&gt;payment_methods-&gt;all();
 </span><span class="p">}</span><span class="w">
 </span></code></pre><h3 id='http-request-3'>HTTP Request</h3>
 <p><code>GET https://api.subscriptionbase.io/v1/customers/&lt;顧客ID&gt;/payment-methods/</code></p>
+<h2 id='31f03181f7'>支払い方法を選択する</h2>
+<p>顧客が料金精算に使用する支払い方法を選択します。<br>
+支払いIDを指定してこの操作を実行すると、is_primary=trueが設定され、その他の支払い方法はis_primary=falseに変更されます。</p>
+
+<blockquote>
+<p>リクエスト</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X GET https://api.subscriptionbase.io/v1/customers/&lt;顧客ID&gt;/payment-methods/&lt;支払い方法ID&gt;/primary/<span class="se">\</span>
+  -H Authorization: Bearer &lt;アクセストークン&gt;
+</code></pre><pre class="highlight php tab-php"><code>use SubscriptionBase\SubscriptionBase;
+use SubscriptionBase\Customer;
+
+SubscriptionBase::setApiKeys(<span class="err">&lt;</span>クライアントID&gt;, <span class="err">&lt;</span>シークレットキー&gt;);
+
+$customer = Customer::retrieve(<span class="err">&lt;</span>顧客ID&gt;);
+$paymentMethod = $customer-&gt;payment_methods-&gt;retrieve(<span class="err">&lt;</span>支払い方法ID&gt;);
+$paymentMethod-&gt;primary();
+</code></pre>
+<blockquote>
+<p>レスポンス</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"pym_01daaj6g6kbbtd29g38wqyt4k6"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"object_name"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="s2">"paymentmethod"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"customer"</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="s2">"cus_01daaj6g58fe7755ytqzetfd4g"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"billing_method"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"blm_01daaj6g46zzfr9c56hfbgj73e"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"is_primary"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"email_address"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"mail_to"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="s2">"mailto@example.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"mail_cc"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"mail_bcc"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"company"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"department"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"position"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="s2">"customer_name"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"archive_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"update_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T10:51:16+0900"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"create_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T10:51:16+0900"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request-4'>HTTP Request</h3>
+<p><code>POST https://api.subscriptionbase.io/v1/customers/&lt;顧客ID&gt;/payment-methods/&lt;支払い方法&gt;/primary/</code></p>
 <h2 id='dd7bde03ff'>支払い方法を削除する</h2>
 <p>顧客が保有する支払い方法を削除します。<br>
 支払い方法が使用設定（is_primary=true）されている場合、削除リクエストはエラーになります。</p>
@@ -1066,7 +1121,7 @@ $paymentMethod-&gt;delete();
   </span><span class="s2">"id"</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="s2">"pym_01daaj6g6kbbtd29g38wqyt4k6"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"archive_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-06T16:59:35+0900"</span><span class="p">,</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><h3 id='http-request-4'>HTTP Request</h3>
+</span></code></pre><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>DELETE https://api.subscriptionbase.io/v1/customers/&lt;顧客ID&gt;/payment-methods/&lt;支払い方法ID&gt;/</code></p>
 <h1 id='subscription'>購読契約（Subscription）</h1>
 <p>「購読契約（Subscription）」は、顧客が購読する各種プランの契約情報を示します。<br>
@@ -1435,10 +1490,97 @@ Subscription::all(array(
 </span><span class="p">}</span><span class="w">
 </span></code></pre><h3 id='http-request-3'>HTTP Request</h3>
 <p><code>GET https://api.subscriptionbase.io/v1/subscriptions/</code></p>
+<h2 id='79a753aa3f'>購読契約をキャンセルする</h2>
+<p>購読契約のキャンセルは、契約の更新停止を示します。<br>
+この操作を行うと、残存する契約期間の満了後、解約状態へ移行します。</p>
+
+<blockquote>
+<p>リクエスト</p>
+</blockquote>
+<pre class="highlight shell tab-shell"><code>curl -X POST https://api.subscriptionbase.io/v1/subscriptions/&lt;ID&gt;/cancel/<span class="se">\</span>
+  -H Authorization: Bearer &lt;アクセストークン&gt;
+</code></pre><pre class="highlight php tab-php"><code>use SubscriptionBase\SubscriptionBase;
+use SubscriptionBase\Subscription;
+
+SubscriptionBase::setApiKeys(<span class="err">&lt;</span>クライアントID&gt;, <span class="err">&lt;</span>シークレットキー&gt;);
+
+$subscription = Subscription::retrieve(<span class="nt">&lt;ID&gt;</span>);
+$subscription-&gt;cancel();
+</code></pre>
+<blockquote>
+<p>レスポンス</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"id"</span><span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="s2">"sub_01daaym81nk191jk81rcra91hq"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"object_name"</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="s2">"subscription"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"trial_begin_at"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-06-01T00:00:00+0900"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"contract_begin_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-06-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"contract_end_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"last_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"next_payment_at"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-07-08T00:00:00+0900"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"state"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"cancel_reserved"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"churn_at"</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"customer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="s2">"cus_01daaym803gvhdycjcky0hmx6t"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"object_name"</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="s2">"customer"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"udid"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"90e342e0-bc4d-48cb-baf4-f93e139f4858"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"email"</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s2">"claytonsanders@banks.com"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"company"</span><span class="w">          </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"department"</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"position"</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"postal_code3"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"postal_code4"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"prefecture"</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address_city"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address_town"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address_number"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"address_building"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"archive_at"</span><span class="w">       </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"update_at"</span><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"create_at"</span><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"plan"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"id"</span><span class="w">              </span><span class="p">:</span><span class="w"> </span><span class="s2">"pln_01daaym808vm16e5eyar0pezdg"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"object_name"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="s2">"plan"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"product"</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="s2">"prd_01daaym8051ej4z6rd54jckgtp"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"name"</span><span class="w">            </span><span class="p">:</span><span class="w"> </span><span class="s2">"</span><span class="se">\u</span><span class="s2">30d7</span><span class="se">\u</span><span class="s2">30e9</span><span class="se">\u</span><span class="s2">30f3</span><span class="se">\u</span><span class="s2">540d"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"public_name"</span><span class="w">     </span><span class="p">:</span><span class="w"> </span><span class="s2">"</span><span class="se">\u</span><span class="s2">30d7</span><span class="se">\u</span><span class="s2">30e9</span><span class="se">\u</span><span class="s2">30f3</span><span class="se">\u</span><span class="s2">516c</span><span class="se">\u</span><span class="s2">958b</span><span class="se">\u</span><span class="s2">540d"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"contract_period"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"m1"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"update_method"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="s2">"repeat"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"payment_term"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="s2">"m1"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"start_method"</span><span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="s2">"trial"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"trial_days"</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"charge"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"charge_type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"volume"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"meter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"id"</span><span class="w">               </span><span class="p">:</span><span class="w"> </span><span class="s2">"mtr_01daaym806bak37h7xrjmrrrqb"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"object_name"</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="s2">"meter"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"name"</span><span class="w">             </span><span class="p">:</span><span class="w"> </span><span class="s2">"meter name"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"public_name"</span><span class="w">      </span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"is_active"</span><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"last_counting_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"update_at"</span><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"create_at"</span><span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"volume"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"unit"</span><span class="w">   </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"amount"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"archive_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"update_at"</span><span class="w">  </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"create_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:29+0900"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"update_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:30+0900"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"create_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-08T14:28:30+0900"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre><h3 id='http-request-4'>HTTP Request</h3>
+<p><code>POST https://api.subscriptionbase.io/v1/subscriptions/&lt;ID&gt;/cancel/</code></p>
 <h2 id='73631a4436'>購読契約を削除する</h2>
 <p>購読契約の削除は、即時解約を示します。<br>
 <aside class="warning">
-この操作を行うと、該当の購読契約は契約期間の残存を無視して即座に解約済み状態となり、料金清算も行われません。
+この操作を行うと、該当の購読契約は契約期間の残存や利用状況を無視して即座に解約済み状態となり、料金清算も行われません。
 </aside></p>
 
 <blockquote>
@@ -1461,7 +1603,7 @@ $subscription-&gt;delete();
   </span><span class="s2">"id"</span><span class="w">         </span><span class="p">:</span><span class="w"> </span><span class="s2">"sub_01daaym81nk191jk81rcra91hq"</span><span class="p">,</span><span class="w">
   </span><span class="s2">"archive_at"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2019-05-06T16:59:35+0900"</span><span class="p">,</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre><h3 id='http-request-4'>HTTP Request</h3>
+</span></code></pre><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>DELETE https://api.subscriptionbase.io/v1/subscriptions/&lt;ID&gt;/</code></p>
 
       </div>
